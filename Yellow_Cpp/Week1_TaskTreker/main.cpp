@@ -1,12 +1,12 @@
-﻿/*	Coursera: ќсновы разработки на C++: жЄлтый по¤с, week 1
-	Programming Assignment: “рекер задач
-	–еализуйте класс TeamTasks, позвол¤ющий хранить статистику по статусам задач команды разработчиков: */
+﻿/*	Coursera: Основы разработки на C++: желтый пояс, week 1
+	Programming Assignment: Трекер задач
+	Реализуйте класс TeamTasks, позволяющий хранить статистику по статусам задач команды разработчиков: */
 
 #include "TeamTask.h"
 
-// ѕринимаем словарь по значению, чтобы иметь возможность
-// обращатьс¤ к отсутствующим ключам с помощью [] и получать 0,
-// не мен¤¤ при этом исходный словарь
+// Принимаем словарь по значению, чтобы иметь возможность
+// обращаться к отсутствующим ключам с помощью [] и получать 0,
+// не меняя при этом исходный словарь
 void PrintTasksInfo(TasksInfo tasks_info) {
 	std::cout << tasks_info[TaskStatus::NEW] << " new tasks" <<
 		", " << tasks_info[TaskStatus::IN_PROGRESS] << " tasks in progress" <<
@@ -27,15 +27,13 @@ int main() {
 
 	TasksInfo updated_tasks, untouched_tasks;
 
-	tie(updated_tasks, untouched_tasks) =
-		tasks.PerformPersonTasks("Ivan", 2);
+	tie(updated_tasks, untouched_tasks) = tasks.PerformPersonTasks("Ivan", 2);
 	std::cout << "Updated Ivan's tasks: ";
 	PrintTasksInfo(updated_tasks);
 	std::cout << "Untouched Ivan's tasks: ";
 	PrintTasksInfo(untouched_tasks);
 
-	tie(updated_tasks, untouched_tasks) =
-		tasks.PerformPersonTasks("Ivan", 2);
+	tie(updated_tasks, untouched_tasks) = tasks.PerformPersonTasks("Ivan", 2);
 	std::cout << "Updated Ivan's tasks: ";
 	PrintTasksInfo(updated_tasks);
 	std::cout << "Untouched Ivan's tasks: ";
