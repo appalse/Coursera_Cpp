@@ -2,12 +2,41 @@
 #include <sstream>
 #include <exception>
 #include <string>
+#include <set>
+#include <map>
 
 bool TestedFunction() {
 	// some function to be tested
 	return true;
 }
 
+template <class T>
+std::ostream& operator << (std::ostream& os, const std::set<T>& s) {
+	os << "{";
+	bool first = true;
+	for (const auto& x : s) {
+		if (!first) {
+			os << ", ";
+		}
+		first = false;
+		os << x;
+	}
+	return os << "}";
+}
+
+template <class K, class V>
+std::ostream& operator << (std::ostream& os, const std::map<K, V>& m) {
+	os << "{";
+	bool first = true;
+	for (const auto& kv : m) {
+		if (!first) {
+			os << ", ";
+		}
+		first = false;
+		os << kv.first << ": " << kv.second;
+	}
+	return os << "}";
+}
 
 template <typename Left, typename Right>
 void assert_equal(const Left& expected, const Right& actual, const std::string& hint = {}) {
