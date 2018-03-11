@@ -1,10 +1,11 @@
-
 #include "condition_parser.h"
 #include "test_runner.h"
 #include "tests.h"
 
 #include <sstream>
 using namespace std;
+
+extern std::string ParseEvent(std::istream& is);
 
 void TestAll() {
 	TestRunner tr;

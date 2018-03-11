@@ -2,16 +2,31 @@
 #include "date.h"
 #include "condition_parser.h"
 #include "node.h"
-#include "test_runner.h"
 #include "tests.h"
 
 #include <iostream>
 #include <stdexcept>
+#include <sstream>
+#include <exception>
+#include <string>
 
 using namespace std;
 
+std::string ParseEvent(std::istream& is) 
+{
+	string event_str;
+	getline(is, event_str);
+	while (!event_str.empty() && event_str.front() == ' ')
+		event_str.erase(event_str.begin(), event_str.begin() + 1);
+	auto it = event_str.find('\"');
+	if (it != string::npos)
+		throw logic_error("Event contain forbidden character (\"): " + event_str);
+	return event_str;
+}
 
-int main() {
+
+int main() 
+{
 	TestAll();
 
 	Database db;
@@ -57,7 +72,7 @@ int main() {
 			throw logic_error("Unknown command: " + command);
 		}
 	}
-
+	system("pause");
 	return 0;
 }
 

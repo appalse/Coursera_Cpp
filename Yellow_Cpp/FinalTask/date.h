@@ -1,15 +1,12 @@
 #pragma once
 
-/*должны содержать объ€влени€ и определени€ класса Date, 
-функции ParseDate и оператора вывода в поток дл€ класса Date;*/
+#include <iostream>
 
-Date ParseDate(std::istream& is);
-
-std::ostream& operator<< (std::ostream& os, const Date& date);
-
-class Date {
+class Date 
+{
 public:
 	Date(int year, int month, int day);
+	Date(const Date& other);
 
 	int Year() const { return m_year; }
 	int Month() const { return m_month; }
@@ -20,3 +17,14 @@ private:
 	const int m_month;
 	const int m_day;
 };
+
+Date ParseDate(std::istream& is);
+
+std::ostream& operator<< (std::ostream& os, const Date& date);
+
+bool operator< (const Date& lhs, const Date& rhs);
+bool operator<= (const Date& lhs, const Date& rhs);
+bool operator> (const Date& lhs, const Date& rhs);
+bool operator>= (const Date& lhs, const Date& rhs);
+bool operator== (const Date& lhs, const Date& rhs);
+bool operator!= (const Date& lhs, const Date& rhs);

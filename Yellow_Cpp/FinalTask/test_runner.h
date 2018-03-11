@@ -65,6 +65,18 @@ void AssertEqual(const Left& expected, const Right& actual, const std::string& h
 	}
 }
 
+void Assert(bool expression, const std::string& hint = {})
+{
+	if (!expression)
+	{
+		std::ostringstream ss;
+		ss << "Expression is not true";
+		if (!hint.empty())
+			ss << " (" << hint << ")";
+		throw std::runtime_error(ss.str());
+	}
+}
+
 template <class ClassType, typename ArgType, typename ExceptionType>
 void assert_throw(ArgType arg, const std::string& hint = {})
 {
