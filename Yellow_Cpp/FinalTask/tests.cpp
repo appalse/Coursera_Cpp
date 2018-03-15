@@ -1,6 +1,8 @@
 #include "condition_parser.h"
 #include "test_runner.h"
 #include "tests.h"
+#include "database.h"
+#include <ctime>
 
 #include <sstream>
 using namespace std;
@@ -11,6 +13,49 @@ void TestAll() {
 	TestRunner tr;
 	tr.RunTest(TestParseEvent, "TestParseEvent");
 	tr.RunTest(TestParseCondition, "TestParseCondition");
+	tr.RunTest(TestTime, "TestTime");
+}
+
+void TestTime() {
+	Database db;
+
+	{
+		std::clock_t start;
+		double duration;
+		start = std::clock();
+		for (int i = 1; i < 10000; ++i)
+		{
+			Date date(i%1000, 1, 1);
+			db.Add(date, "some event");
+		}
+		duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+		std::cerr << "printf: " << duration << '\n';
+	}
+	/*{
+		std::clock_t start;
+		double duration;
+		start = std::clock();
+		for (int i = 1; i < 10000; ++i)
+		{
+			std::ostringstream ss;
+			db.Print(std::cout);
+		}
+		duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+		std::cout << "printf: " << duration << '\n';
+	}*/
+	{
+		std::clock_t start;
+		double duration;
+		start = std::clock();
+		for (int i = 1; i < 10000; ++i)
+		{
+			Date date(i % 1000, 1, 1);
+			db.Last(date);
+		}
+		duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+		std::cerr << "printf: " << duration << '\n';
+	}
+	
 }
 
 void TestParseEvent() {

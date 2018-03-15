@@ -7,16 +7,28 @@ using namespace std;
 
 void Database::Add(const Date& date, const string& event)
 {
-	vector<string>& events_list = m_db[date];
-	if (events_list.empty() || (find(events_list.begin(), events_list.end(), event) == events_list.end()))
-		    m_db[date].push_back(event);
+	auto& field = m_db[date];
+	unordered_set<string>& events_names = field.first;
+	map<unsigned, string>& events = field.second;
+	bool has_event = (events_names.find(event) != events_names.end());
+	unsigned order = 0;
+	if (!events.empty())
+		order = events.rbegin()->first + 1;
+	if (events.empty() || !has_event)
+	{
+		events.emplace(order, event);
+		events_names.insert(event);
+	}
 }
 
 void Database::Print(ostream & os) const
 {
 	for (const auto& field : m_db)
-		for (const string& event : field.second)
-			os << field.first << ' ' << event << endl;
+	{
+		const map<unsigned, string>& events = field.second.second;
+		for (const auto& event : events)
+			os << field.first << ' ' << event.second<< endl;
+	}
 }
 
 int Database::RemoveIf(function<bool(const Date&, const string&)> condition)
@@ -25,15 +37,20 @@ int Database::RemoveIf(function<bool(const Date&, const string&)> condition)
 
 	for (auto m_db_it = m_db.begin(); m_db_it != m_db.end(); )
 	{
-		vector<string>& events = m_db_it->second;
-		auto it = remove_if(events.begin(), events.end(), [&] (const string& event) {
-			return condition(m_db_it->first, event);
-		});
-		removed_count += distance(it, events.end());
-		if (it != events.end())
-			events.erase(it, events.end());
+		map<unsigned, string>& events = m_db_it->second.second;
+		for (auto event_it = events.begin(); event_it != events.end(); )
+		{
+			if (condition(m_db_it->first, event_it->second))
+			{
+				m_db_it->second.first.erase(event_it->second);
+				event_it = events.erase(event_it);
+				++removed_count;
+			} else
+				++event_it;
+		}
+
 		// remove date with empty events list
-		if (m_db_it->second.empty())
+		if (m_db_it->second.second.empty())
 			m_db_it = m_db.erase(m_db_it);
 		else
 			++m_db_it;
@@ -46,13 +63,16 @@ vector<string> Database::FindIf(function<bool(const Date&, const string&)> condi
 {
 	vector<string> found;
 	for (auto& field : m_db)
-		for (const auto& event : field.second)
-			if (condition(field.first, event))
+	{
+		const map<unsigned, string>& events = field.second.second;
+		for (const auto& event : events)
+			if (condition(field.first, event.second))
 			{
 				stringstream ss;
-				ss << field.first << ' ' << event;
+				ss << field.first << ' ' << event.second;
 				found.push_back(ss.str());
 			}
+	}
 	return found;
 }
 
@@ -62,7 +82,8 @@ string Database::Last(const Date& date)
 	if (m_db.begin() == it)
 		throw invalid_argument("Date was not found");
 	--it;
+	
 	stringstream ss;
-	ss << it->first << ' ' <<it->second.back();
+	ss << it->first << ' ' << it->second.second.rbegin()->second;
 	return ss.str();
 }

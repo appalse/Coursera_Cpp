@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <unordered_set>
 #include <functional>
 #include "date.h"
 
@@ -21,6 +22,5 @@ public:
 	std::string Last(const Date& date);
 
 private:
-	std::map<Date, std::vector<std::string>> m_db;
+	std::map<Date, std::pair<  std::unordered_set<std::string>, std::map<unsigned, std::string>  >  > m_db;
 };
-
